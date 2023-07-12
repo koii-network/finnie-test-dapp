@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useWalletContext } from './context/WalletContext';
 import { Text, Button, Link } from '@chakra-ui/react';
 import {
   Transaction,
@@ -10,20 +11,23 @@ import {
 import { useFinnie } from './hooks/useFinnie';
 
 const ConnectWallet = () => {
+  const { setIsFinnieDetected, isFinnieDetected } = useWalletContext();
   const [connected, setConnected] = useState(false);
-  const [isFinnieDetected, setIsFinnieDetected] = useState(null);
   const {
     finnieLoaded,
     connect,
     disconnect,
     getPublicKey,
     signAndSendTransaction,
-  } = useFinnie();
+  } = useFinnie({ setIsFinnieDetected }); // useFinnie hook
 
+  // Connect to Finnie
   const handleConnect = async () => {};
 
+  // Disconnect from Finnie
   const handleDisconnect = async () => {};
 
+  // Send transaction
   const handleSend = async () => {};
 
   return (
@@ -42,27 +46,31 @@ const ConnectWallet = () => {
             Send 0.1 KOII
           </Button>
         </>
-      ) : !connected && isFinnieDetected === null ? (
-        <Button
-          colorScheme="teal"
-          disabled={finnieLoaded}
-          onClick={handleConnect}
-        >
-          {isFinnieDetected === false ? 'Get Finnie' : 'Connect Finnie'}
-        </Button>
       ) : (
         <>
-          <Text fontSize={'2xl'}>Finnie not detected</Text>
-          <Button colorScheme="teal">
-            <Link
-              href={
-                'https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj'
-              }
-              isExternal
+          {isFinnieDetected ? (
+            <Button
+              colorScheme="teal"
+              disabled={finnieLoaded}
+              onClick={handleConnect}
             >
-              Get Finnie
-            </Link>
-          </Button>
+              Connect Finnie
+            </Button>
+          ) : (
+            <>
+              <Text fontSize={'2xl'}>Finnie not detected</Text>
+              <Button colorScheme="teal">
+                <Link
+                  href={
+                    'https://chrome.google.com/webstore/detail/finnie/cjmkndjhnagcfbpiemnkdpomccnjblmj'
+                  }
+                  isExternal
+                >
+                  Get Finnie
+                </Link>
+              </Button>
+            </>
+          )}
         </>
       )}
     </>

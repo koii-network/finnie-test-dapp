@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 
-export const useFinnie = () => {
+export const useFinnie = ({ setIsFinnieDetected }) => {
   const [finnieLoaded, setFinnieLoaded] = useState(false);
 
   useEffect(() => {
     const handler = () => {
-      setFinnieLoaded(true);
+      setIsFinnieDetected(true);
     };
 
     window.addEventListener('finnieWalletLoaded', handler);
@@ -33,5 +33,6 @@ export const useFinnie = () => {
     disconnect,
     getPublicKey,
     signAndSendTransaction,
+    setIsFinnieDetected,
   };
 };
