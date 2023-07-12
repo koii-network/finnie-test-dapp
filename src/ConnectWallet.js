@@ -20,45 +20,11 @@ const ConnectWallet = () => {
     signAndSendTransaction,
   } = useFinnie();
 
-  const handleConnect = async () => {
-    try {
-      const publicKey = await connect();
-      if (publicKey) {
-        setConnected(true);
-        setIsFinnieDetected(true);
-      }
-    } catch (err) {
-      setIsFinnieDetected(false);
-      console.error(err);
-    }
-  };
+  const handleConnect = async () => {};
 
-  const handleDisconnect = async () => {
-    await disconnect();
-    setConnected(false);
-  };
+  const handleDisconnect = async () => {};
 
-  const handleSend = async () => {
-    const connection = new Connection(clusterApiUrl('devnet'));
-    const blockHash = (await connection.getRecentBlockhash()).blockHash;
-    const feePayer = getPublicKey();
-
-    const transaction = new Transaction();
-    transaction.recentBlockhash = blockHash;
-    transaction.feePayer = feePayer;
-
-    const recipient = 'example_address';
-
-    transaction.add(
-      SystemProgram.transfer({
-        fromPubkey: getPublicKey(),
-        toPubkey: new PublicKey(recipient),
-        lamports: 100000000, // 0.1 KOII
-      })
-    );
-
-    const signature = await signAndSendTransaction(transaction);
-  };
+  const handleSend = async () => {};
 
   return (
     <>

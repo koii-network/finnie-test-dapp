@@ -16,43 +16,16 @@ export const useFinnie = () => {
   }, []);
 
   // Connect to Finnie
-  const connect = async () => {
-    if (window?.k2) {
-      if (window.k2.isConnected) {
-        const publicKey = window?.k2?.publicKey;
-        return publicKey.toString();
-      } else {
-        return await window?.k2
-          .connect()
-          .then(pubKey => {
-            return pubKey.toString();
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }
-    }
-    return Promise.reject(
-      'Finnie is detected but K2 features are missing - is your Finnie up to date? '
-    );
-  };
+  const connect = async () => {};
 
   // Disconnect from Finnie
-  const disconnect = async () => {
-    if (finnieLoaded) {
-      window.k2.disconnect();
-    }
-  };
+  const disconnect = async () => {};
 
   // Fetch user's public address
-  const getPublicKey = () => {
-    if (window.k2.isConnected) return window.k2.publicKey;
-    return null;
-  };
+  const getPublicKey = () => {};
 
-  const signAndSendTransaction = transaction => {
-    return window.k2.signAndSendTransaction(transaction);
-  };
+  // Sign and send a transaction
+  const signAndSendTransaction = transaction => {};
 
   return {
     finnieLoaded,
