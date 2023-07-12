@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useWalletContext } from './context/WalletContext';
 import { Text, Button, Link } from '@chakra-ui/react';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Transaction,
   Connection,
@@ -11,15 +11,15 @@ import {
 import { useFinnie } from './hooks/useFinnie';
 
 const ConnectWallet = () => {
-  const { setIsFinnieDetected, isFinnieDetected } = useWalletContext();
   const [connected, setConnected] = useState(false);
+  const [transactionHash, setTransactionHash] = useState(null);
   const {
     finnieLoaded,
     connect,
     disconnect,
     getPublicKey,
     signAndSendTransaction,
-  } = useFinnie({ setIsFinnieDetected }); // useFinnie hook
+  } = useFinnie(); // useFinnie hook
 
   // Connect to Finnie
   const handleConnect = async () => {};
@@ -45,10 +45,19 @@ const ConnectWallet = () => {
           >
             Send 0.1 KOII
           </Button>
+          {transactionHash && (
+            <Link
+              href={`https://explorer.koii.live/tx/${transactionHash}`}
+              isExternal
+              color="teal.500"
+            >
+              View transaction details <ExternalLinkIcon mx="2px" />
+            </Link>
+          )}
         </>
       ) : (
         <>
-          {isFinnieDetected ? (
+          {finnieLoaded ? (
             <Button
               colorScheme="teal"
               disabled={finnieLoaded}
