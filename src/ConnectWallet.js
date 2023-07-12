@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useWalletContext } from './context/WalletContext';
 import { Text, Button, Link } from '@chakra-ui/react';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Transaction,
   Connection,
@@ -11,18 +11,18 @@ import {
 import { useFinnie } from './hooks/useFinnie';
 
 const ConnectWallet = () => {
-  const { setIsFinnieDetected, isFinnieDetected } = useWalletContext();
   const [connected, setConnected] = useState(false);
+  const [transactionHash, setTransactionHash] = useState(null);
   const {
     finnieLoaded,
     connect,
     disconnect,
     getPublicKey,
     signAndSendTransaction,
-  } = useFinnie({ setIsFinnieDetected });
+  } = useFinnie();
 
   const handleConnect = async () => {
-    if (isFinnieDetected) {
+    if (finnieLoaded) {
       try {
         const publicKey = await connect();
         if (publicKey) setConnected(true);
@@ -39,14 +39,14 @@ const ConnectWallet = () => {
 
   const handleSend = async () => {
     const connection = new Connection(clusterApiUrl('devnet'));
-    const blockHash = (await connection.getRecentBlockhash()).blockHash;
+    const blockHash = (await connection.getRecentBlockhash()).blockhash;
     const feePayer = getPublicKey();
 
     const transaction = new Transaction();
     transaction.recentBlockhash = blockHash;
     transaction.feePayer = feePayer;
 
-    const recipient = 'example_address';
+    const recipient = '7x8tP5ipyqPfrRSXoxgGz6EzfTe3S84J3WUvJwbTwgnY';
 
     transaction.add(
       SystemProgram.transfer({
@@ -57,6 +57,7 @@ const ConnectWallet = () => {
     );
 
     const signature = await signAndSendTransaction(transaction);
+    setTransactionHash(signature);
   };
 
   return (
@@ -74,10 +75,19 @@ const ConnectWallet = () => {
           >
             Send 0.1 KOII
           </Button>
+          {transactionHash && (
+            <Link
+              href={`https://explorer.koii.live/tx/${transactionHash}`}
+              isExternal
+              color="teal.500"
+            >
+              View transaction details <ExternalLinkIcon mx="2px" />
+            </Link>
+          )}
         </>
       ) : (
         <>
-          {isFinnieDetected ? (
+          {finnieLoaded ? (
             <Button
               colorScheme="teal"
               disabled={finnieLoaded}
